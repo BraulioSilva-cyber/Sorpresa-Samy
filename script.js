@@ -3,8 +3,10 @@ onload = () => {
   
   const field = document.getElementById('flower-field');
   
-  const cols = 12; 
-  const rows = 8;  
+  // Detecta si es un celular para reducir la cantidad de flores a la mitad y evitar lag
+  const isMobile = window.innerWidth < 768;
+  const cols = isMobile ? 6 : 12; 
+  const rows = isMobile ? 8 : 8;  
   
   const cellWidth = 100 / cols;
   const cellHeight = 100 / rows;
@@ -12,6 +14,13 @@ onload = () => {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       
+      const isCenterRow = r >= Math.floor(rows / 2) - 1 && r <= Math.floor(rows / 2) + 1;
+      const isCenterCol = c >= Math.floor(cols / 2) - 1 && c <= Math.floor(cols / 2);
+
+      if (isCenterRow && isCenterCol) {
+        continue; 
+      }
+
       const flower = document.createElement('div');
       flower.classList.add('flower');
       
@@ -21,12 +30,12 @@ onload = () => {
       const leftPosition = (c * cellWidth) + (cellWidth / 2) + jitterX; 
       const topPosition = (r * cellHeight) + (cellHeight / 2) + jitterY; 
       
-      const scale = Math.random() * 0.4 + 0.15;     
+      // En móviles, hacemos las flores un pelín más pequeñas
+      const scaleBase = isMobile ? 0.3 : 0.4;
+      const scale = Math.random() * scaleBase + 0.15;     
       const delay = Math.random() * 3.5 + 0.5;         
       
-      // Velocidad de giro entre 15 y 40 segundos para que se vea sutil y natural
       const spinSpeed = Math.random() * 25 + 15; 
-      // Giro aleatorio a la izquierda o a la derecha
       const spinDir = Math.random() > 0.5 ? 'normal' : 'reverse';
       
       const finalLeft = Math.max(2, Math.min(98, leftPosition));
